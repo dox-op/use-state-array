@@ -1,0 +1,36 @@
+{
+  "name": "use-state-array",
+  "version": "1.0.0",
+  "description": "hook to manage array as state in React application",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dox-op/use-state-array.git"
+  },
+  "author": "doxop - Enrico Pezzini",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dox-op/use-state-array/issues"
+  },
+  "homepage": "https://github.com/dox-op/use-state-array#readme",
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "lodash.isequal": "4.5.0",
+    "microbundle": "0.15.1",
+    "react": "18.3.1"
+  },
+  "type": "module",
+  "source": "src/index.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.esm.js"
+  },
+  "module": "./dist/index.esm.js",
+  "unpkg": "./dist/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "microbundle",
+    "dev": "microbundle watch"
+  }
+}
