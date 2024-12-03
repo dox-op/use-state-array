@@ -7,7 +7,7 @@ export function useStateArray<D = string>(
     keepSorted = true
 ) {
     const [array, setArrayInternal] = useState<D[]>(initialState);
-    const setArray = (items: D[]) => keepSorted ? setArray(items.sort(compareTo)) : setArray(items);
+    const setArray: (items: D[]) => void = (items: D[]) => keepSorted ? setArrayInternal(items.sort(compareTo)) : setArrayInternal(items);
 
     function cleanArrayFromItem(item: D | D[]) {
         const items = Array.isArray(item) ? item : [item];
@@ -45,12 +45,22 @@ export function useStateArray<D = string>(
         );
     };
 
+    function findInArray(item: D): D | null {
+        return array.find(arrayItem => compareTo(item, arrayItem) === 0) ?? null;
+    }
+
+    function toSingleOccurrence() {
+        return array.reduce<D[]>((acc, item) => acc.find(arrayItem => compareTo(item, arrayItem) === 0) ? acc : acc.concat(item), []);
+    }
+
     return {
         array,
         addItem,
         removeItem,
         setArray,
         areEquals,
-        areEqualsDeep
+        areEqualsDeep,
+        findInArray,
+        toSingleOccurrence
     };
 }

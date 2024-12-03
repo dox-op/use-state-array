@@ -130,6 +130,6 @@ dist
 .pnp.*
 /.idea/
 /.run/
-/index.cjs
-/index.esm.js
-/index.umd.js
+/dist/index.cjs
+/dist/index.esm.js
+/dist/index.umd.js
