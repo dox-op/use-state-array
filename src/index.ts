@@ -1,6 +1,15 @@
 import {useState} from "react";
 import isEqual from "lodash.isequal";
 
+/**
+ * API useStateArray
+ * @param compareTo (Function): A function to compare two array elements. It should return:
+ * - A negative number if a comes before b.
+ * - Zero if a and b are equal.
+ * - A positive number if a comes after b.
+ * @param initialState (Array): The initial array.
+ * @param keepSorted (Boolean): Configuration to tell single operations to keep array sorted
+ */
 export function useStateArray<D = string>(
     compareTo: (a: D, b: D) => number,
     initialState: D[] | undefined = [],
