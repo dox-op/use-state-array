@@ -45,11 +45,11 @@ export function useStateArray<D = string>(
         );
     };
 
-    function findInArray(item: D): D | null {
+    const findInArray = (item: D): D | null => {
         return array.find(arrayItem => compareTo(item, arrayItem) === 0) ?? null;
     }
 
-    function toSingleOccurrence() {
+    const toSingleOccurrence = () => {
         return array.reduce<D[]>((acc, item) => acc.find(arrayItem => compareTo(item, arrayItem) === 0) ? acc : acc.concat(item), []);
     }
 
