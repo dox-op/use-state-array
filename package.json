@@ -1,6 +1,6 @@
 {
   "name": "use-state-array",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "hook to manage array as state in React application",
   "repository": {
     "type": "git",
