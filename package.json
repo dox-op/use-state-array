@@ -36,6 +36,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "microbundle",
-    "dev": "microbundle watch"
+    "dev": "microbundle watch",
+    "prepublishOnly": "npm run build",
+    "release": "npm run build && npm publish --access public"
   }
 }

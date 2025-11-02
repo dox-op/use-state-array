@@ -116,3 +116,18 @@ const state = useStateArray<D>(
 - `resetArray()` — Restores the array to the provided `initialState`.
 
 Refer to the in-source TSDoc comments (`src/index.ts`) for precise typing information.
+
+## Release
+
+The project ships through an automated GitHub Actions workflow:
+
+1. Make sure `package.json` has the right version (use `npm version <patch|minor|major>`).
+2. Push a matching git tag in the form `v1.2.3` to GitHub: `git push origin main --tags`.
+3. The `Release` workflow runs `npm ci`, builds with `microbundle`, and publishes to npm.
+
+Setup required on the repository:
+
+- Add an `NPM_TOKEN` secret with publish rights to the package.
+- Optional: trigger the workflow manually from the Actions tab (`Workflow Dispatch`) to re-run a release.
+
+You can still release locally with `npm run release`, which builds and publishes using the same steps.
