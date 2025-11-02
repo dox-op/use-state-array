@@ -1,19 +1,19 @@
 # use-state-array
 
-`use-state-array` is a React state array wrapper that simplifies the management of complex arrays. By providing
-a `compareTo` function during initialization, it offers various methods such as sorting, finding, upserting, and
-removing elements.
+`use-state-array` is a lightweight helper hook for React that wraps `useState` and gives you array-specific
+helpers such as sorting, deduplication, equality checks, and resetting to the initial value. Provide your own
+`compareTo` function once and you get a predictable set of utilities for any array-based state.
 
 ## Features
 
-- **Sorting**: Automatically sort the array.
-- **Finding**: Easily locate elements using a comparison function.
-- **Upserting**: Add or update elements effortlessly.
-- **Removing**: Remove elements quickly and intuitively.
+- **Custom ordering**: Pass a comparator and the hook keeps the array sorted (or not, you decide).
+- **Idempotent inserts**: `addItem` replaces existing matches before inserting, preventing duplicates.
+- **Safe removals**: `removeItem` removes one or multiple items in a single call.
+- **Equality helpers**: `areEquals` and `areEqualsDeep` ensure quick comparisons in memoised components.
+- **State recovery**: `resetArray` restores the original `initialState` snapshot at any time.
+- **Deduplication**: `toSingleOccurrence` gives a copy of the array with unique items only.
 
 ## Installation
-
-Install the dependency using npm or yarn:
 
 ```bash
 npm install use-state-array
@@ -21,38 +21,60 @@ npm install use-state-array
 pnpm add use-state-array
 ```
 
+This hook works with React 16.8+ (hooks support). No extra providers or setup required.
+
 ## Usage
 
-Here’s a basic usage example:
+The hook is exported as a named function. Import it in any React component and provide the comparator you want
+to use:
 
-```typescript jsx
-import useStateArray from 'use-state-array';
+```tsx
+import { useStateArray } from "use-state-array";
 
-type Donut = {
-    id: string;
-    flavor: string;
-}
+type Donut = { id: string; flavor: string };
 
-function App() {
-    const possibleDonutFlavors = ["Maple Bacon", "Chocolate Hazelnut", "Lemon Poppy Seed", "Raspberry Jelly", "Matcha Green Tea"];
+const initialDonuts: Donut[] = [
+    { id: "1", flavor: "Chocolate Hazelnut" },
+    { id: "2", flavor: "Raspberry Jelly" },
+];
+
+export function DonutList() {
     const {
         array: donuts,
-        addItem: upsertDonuts,
-        removeItem: removeDonuts
-    } = useStateArray((a, b) => a.id.localeCompare(b.id), []);
+        addItem,
+        removeItem,
+        areEqualsDeep,
+        resetArray,
+    } = useStateArray<Donut>(
+        (a, b) => a.id.localeCompare(b.id),
+        initialDonuts,
+    );
+
+    const addRandomDonut = () => {
+        const flavors = [
+            "Maple Bacon",
+            "Lemon Poppy Seed",
+            "Matcha Green Tea",
+            "Cinnamon Sugar",
+        ];
+        const randomFlavor = flavors[Math.floor(Math.random() * flavors.length)];
+        addItem({
+            id: crypto.randomUUID(),
+            flavor: randomFlavor,
+        });
+    };
 
     return (
         <div>
-            <button onClick={() => addItem({
-                id: String(Math.floor(Math.random() * 100)),
-                label: possibleDonutFlavors[Math.floor(Math.random() * 100) % 5]
-            })}>Add Item
+            <button onClick={addRandomDonut}>Add donut</button>
+            <button onClick={resetArray} disabled={areEqualsDeep(initialDonuts)}>
+                Reset
             </button>
             <ul>
-                {array.map(({id, flavor}) => (
-                    <li key={id}>
-                        {flavor}
-                        <button onClick={() => removeDonuts({id})}>Remove item</button>
+                {donuts.map((donut) => (
+                    <li key={donut.id}>
+                        {donut.flavor}
+                        <button onClick={() => removeItem(donut)}>Remove</button>
                     </li>
                 ))}
             </ul>
@@ -61,15 +83,36 @@ function App() {
 }
 ```
 
+Want to manage the array manually? Pass `keepSorted = false` to preserve insertion order:
+
+```ts
+const state = useStateArray(compareFn, [], false);
+```
+
 ## API
 
-`useStateArray(compareTo, initialState, keepSorted)`
+```ts
+const state = useStateArray<D>(
+    compareTo: (a: D, b: D) => number,
+    initialState?: D[],
+    keepSorted = true,
+);
+```
 
-#### Parameters:
+- `compareTo` — Mandatory comparator used for sorting and equality checks.
+- `initialState` — Optional starting array. Defaults to `[]`.
+- `keepSorted` — When `true`, every mutation keeps the array sorted using `compareTo`.
 
-use-state-array respect TSDoc standards
+### Returned helpers
 
-#### Available methods:
+- `array` — The current array state.
+- `setArray(items: D[])` — Replaces the array with `items` (sorted if `keepSorted` is `true`).
+- `addItem(item: D | D[])` — Upserts an item or list of items into the array.
+- `removeItem(item: D | D[])` — Removes an item or list of items from the array.
+- `areEquals(items: D[])` — Shallow equality using `compareTo`, ignoring order and duplicates.
+- `areEqualsDeep(items: D[])` — Deep equality using `lodash.isequal`.
+- `findInArray(item: D)` — Returns the first matching element or `null`.
+- `toSingleOccurrence()` — Returns a copy containing only the first occurrence of each item.
+- `resetArray()` — Restores the array to the provided `initialState`.
 
-use-state-array respect TSDoc standards
-
+Refer to the in-source TSDoc comments (`src/index.ts`) for precise typing information.
