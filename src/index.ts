@@ -20,11 +20,12 @@ import isEqual from "lodash.isequal";
  */
 export function useStateArray<D = string>(
     compareTo: (a: D, b: D) => number,
-    initialState: D[] | undefined = [],
+    initialState?: D[],
     keepSorted = true,
 ) {
-    const [backupArray] = useState<D[]>(initialState ?? []);
-    const [array, setArrayInternal] = useState<D[]>(initialState);
+    const initialArray = initialState ?? [];
+    const [backupArray] = useState<D[]>(initialArray);
+    const [array, setArrayInternal] = useState<D[]>(initialArray);
     /**
      * Replaces the current array with the provided items, optionally sorting them first.
      *

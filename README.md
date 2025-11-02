@@ -121,9 +121,10 @@ Refer to the in-source TSDoc comments (`src/index.ts`) for precise typing inform
 
 The project ships through an automated GitHub Actions workflow:
 
-1. Make sure `package.json` has the right version (use `npm version <patch|minor|major>`).
-2. Push a matching git tag in the form `v1.2.3` to GitHub: `git push origin main --tags`.
-3. The `Release` workflow runs `npm ci`, builds with `microbundle`, and publishes to npm.
+1. Run `npm test` to ensure the hook keeps **100%** coverage.
+2. Bump the version with `npm version <patch|minor|major>` so `package.json` and the tag stay in sync.
+3. Push a matching git tag in the form `v1.2.3` to GitHub: `git push origin main --tags`.
+4. The `Release` workflow runs `npm ci`, executes the tests, builds with `microbundle`, and publishes to npm.
 
 Setup required on the repository:
 
